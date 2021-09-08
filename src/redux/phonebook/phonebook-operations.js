@@ -7,18 +7,18 @@ import {
   deleteContactRequest,
   deleteContactSuccess,
   deleteContactError,
-  fetchContactsRequest,
-  fetchContactsSuccess,
-  fetchContactsError,
+  fetchContactRequest,
+  fetchContactSuccess,
+  fetchContactError,
 } from "./phonebook-actions";
 
 export const fetchContacts = () => async (dispatch) => {
-  dispatch(fetchContactsRequest());
+  dispatch(fetchContactRequest());
   try {
     const { data } = await axios.get("/contacts");
-    dispatch(fetchContactsSuccess(data));
+    dispatch(fetchContactSuccess(data));
   } catch (error) {
-    dispatch(fetchContactsError(error));
+    dispatch(fetchContactError(error));
   }
 };
 

@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getContacts } from '../../redux/selectors';
-import { addContact } from '../../redux/operations';
-import s from './Form.module.css';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getContacts } from "../../redux/phonebook/phonebook-selectors";
+import { addContact } from "../../redux/phonebook/phonebook-operations";
+import s from "./Form.module.css";
 
 export default function Nameform() {
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
   const onSubmit = (name, number) => dispatch(addContact(name, number));
 
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
 
   function handleChange(event) {
     const { name, value } = event.target;
     switch (name) {
-      case 'name':
+      case "name":
         setName(value);
         console.log(value);
         break;
-      case 'number':
+      case "number":
         setNumber(value);
         console.log(value);
         break;
@@ -28,14 +28,14 @@ export default function Nameform() {
     }
   }
 
-  const checkName = name => {
+  const checkName = (name) => {
     return contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase(),
+      (contact) => contact.name.toLowerCase() === name.toLowerCase()
     );
   };
 
-  const checkNumber = number => {
-    return contacts.find(contact => contact.number === number);
+  const checkNumber = (number) => {
+    return contacts.find((contact) => contact.number === number);
   };
 
   function handleSubmit(e) {
@@ -45,16 +45,16 @@ export default function Nameform() {
       alert(`${name} is already added.`);
     } else if (checkNumber(number)) {
       alert(`${number} is already added.`);
-    } else if (name.trim() === '' || number.trim() === '') {
-      alert('All of inputs must be not empty');
+    } else if (name.trim() === "" || number.trim() === "") {
+      alert("All of inputs must be not empty");
     } else {
       //  dispatch(addContact(name, number));
       onSubmit(name, number);
     }
 
     // onSubmit(name, number);
-    setName('');
-    setNumber('');
+    setName("");
+    setNumber("");
   }
 
   return (

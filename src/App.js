@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch } from "react-router-dom";
-import PrivateRoute from "components/PrivateRoute";
-import PublicRoute from "components/PublicRoute";
-import authOperations from "redux/auth/auth-operations";
-import Container from "components/Container";
-import AppBar from "components/AppBar";
-import HomeView from "views/HomeView";
-import RegisterView from "views/RegisterView";
-import LoginView from "views/LoginView";
-import ContactsView from "views/ContactsView";
-import authSelectors from "redux/auth/auth-selectors";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
+import authOperations from "./redux/auth/auth-operations";
+import Container from "./components/Container";
+import AppBar from "./components/AppBar";
+import HomeView from "./components/views/HomeView";
+import RegisterView from "./components/views/RegisterView";
+import LoginView from "./components/views/LoginView";
+import ContactsView from "./components/views/ContactsView";
+import authSelectors from "./redux/auth/auth-selectors";
 
 export default function App() {
   const isFetchingCurrentUser = useSelector(
