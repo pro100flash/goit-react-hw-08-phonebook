@@ -1,5 +1,4 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import logger from "redux-logger";
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -9,33 +8,34 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import phonebookReducer from "./phonebook/phonebook-reducers";
-import authReducer from "./auth/auth-slice";
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import contactsReducer from './contacts/contacts-reducer';
+import { authReducer } from './auth';
+import logger from 'redux-logger';
 
 const middleware = [
   ...getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
+    logger,
   }),
-  logger,
 ];
 
 const authPersistConfig = {
-  key: "auth",
+  key: 'auth',
   storage,
-  whitelist: ["token"],
+  whitelist: ['token'],
 };
 
 export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
-    contacts: phonebookReducer,
+    contacts: contactsReducer,
   },
+  devTools: process.env.NODE_ENV === 'development',
   middleware,
-  devTools: process.env.NODE_ENV === "development",
 });
 
 export const persistor = persistStore(store);

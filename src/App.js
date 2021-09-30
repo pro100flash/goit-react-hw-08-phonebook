@@ -1,51 +1,75 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Switch } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute";
-import PublicRoute from "./components/PublicRoute";
-import authOperations from "./redux/auth/auth-operations";
-import Container from "./components/Container";
-import AppBar from "./components/AppBar";
-import HomeView from "./components/views/HomeView";
-import RegisterView from "./components/views/RegisterView";
-import LoginView from "./components/views/LoginView";
-import ContactsView from "./components/views/ContactsView";
-import authSelectors from "./redux/auth/auth-selectors";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { useEffect, Suspense, lazy } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Switch } from 'react-router-dom';
+import { authOperations, authSelectors } from './redux/auth';
+
+import Container from './components/Container';
+import AppBar from './components/AppBar/AppBar';
+import Loader from './components/Loader';
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
+
+const HomePage = lazy(() =>
+  import('./pages/HomePage' /* webpackChunkName: "homePage" */),
+);
+
+const SignUpPage = lazy(() =>
+  import('./pages/SignUpPage' /* webpackChunkName: "SignUpPage" */),
+);
+
+const LoginPage = lazy(() =>
+  import('./pages/LoginPage' /* webpackChunkName: "LoginPage" */),
+);
+
+const ContactsPage = lazy(() =>
+  import('./pages/ContactsPage' /* webpackChunkName: "contactsPage" */),
+);
 
 export default function App() {
-  const isFetchingCurrentUser = useSelector(
-    authSelectors.getIsFetchingCurrentUser
-  );
-
   const dispatch = useDispatch();
+  const isFetchingCurrentUser = useSelector(authSelectors.getIsFetchingCurrent);
 
   useEffect(() => {
     dispatch(authOperations.fetchCurrentUser());
   }, [dispatch]);
 
   return (
-    !isFetchingCurrentUser && (
-      <Container>
-        <AppBar />
+    <Container>
+      {isFetchingCurrentUser ? (
+        <Loader />
+      ) : (
+        <>
+          <AppBar />
+          <Switch>
+            <Suspense fallback={<Loader />}>
+              <PublicRoute path="/" exact>
+                <HomePage />
+              </PublicRoute>
 
-        <Switch>
-          <PublicRoute exact path="/">
-            <HomeView />
-          </PublicRoute>
+              <PublicRoute exact path="/register" restricted>
+                <SignUpPage />
+              </PublicRoute>
 
-          <PublicRoute exact path="/register" restricted>
-            <RegisterView />
-          </PublicRoute>
+              <PublicRoute
+                exact
+                path="/login"
+                redirectTo="/contacts"
+                restricted
+              >
+                <LoginPage />
+              </PublicRoute>
 
-          <PublicRoute exact path="/login" restricted>
-            <LoginView />
-          </PublicRoute>
-
-          <PrivateRoute path="/contacts">
-            <ContactsView />
-          </PrivateRoute>
-        </Switch>
-      </Container>
-    )
+              <PrivateRoute path="/contacts" redirectTo="/login">
+                <ContactsPage />
+              </PrivateRoute>
+            </Suspense>
+          </Switch>
+        </>
+      )}
+      <ToastContainer autoClose={3000} />
+    </Container>
   );
 }
